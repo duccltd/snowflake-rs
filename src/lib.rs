@@ -32,7 +32,7 @@ impl SnowflakeIdGenerator {
 
         let ip_split: Vec<&str> = ip.split(".").collect();
 
-        let machine_bits = ip_split[2].to_string().parse::<i64>().unwrap() << 8 | ip_split[3].to_string().parse::<i64>().unwrap();
+        let machine_bits = numerize(ip_split[2]) << 8 | numerize(ip_split[3]);
         
         SnowflakeIdGenerator {
             last_time_millis,
@@ -164,4 +164,9 @@ fn biding_time_conditions(last_time_millis: i64) -> i64 {
         }
         spin_loop();
     }
+}
+
+#[inline(always)]
+fn numerize(part: &str) -> i64 {
+    part.to_string().parse::<i64>().unwrap()
 }
