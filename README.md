@@ -1,8 +1,8 @@
 # snowflake-rs
+
 Rust version of the `Twitter snowflake algorithm` .
 
-A crate for quick generating distributed-ids. 
-
+A crate for quick generating distributed-ids.
 
 API Docs: https://docs.rs/rs-snowflake
 
@@ -20,7 +20,7 @@ rs-snowflake = "*"
 ```rust
 use snowflake::SnowflakeIdGenerator;
 fn main() {
-   let mut id_generator_generator = SnowflakeIdGenerator::new(1, 1);
+   let mut id_generator_generator = SnowflakeIdGenerator::new_from_ip("102.65.2.123".to_string());
    let id = id_generator_generator.real_time_generate();
 }
 ```
@@ -28,12 +28,10 @@ fn main() {
 ```rust
 use snowflake::SnowflakeIdBucket;
 fn main() {
-   let mut id_generator_bucket = SnowflakeIdBucket::new(1, 1);
+   let mut id_generator_bucket = SnowflakeIdBucket::new_from_ip("102.65.2.123".to_string());
    let id = id_generator_bucket.get_id();
 }
 ```
-
-
 
 ```
 test bench_generate_get_id_by_bucket                      ... bench:           7 ns/iter (+/- 0)
@@ -52,8 +50,7 @@ test bench_generate_ids_by_bucket                         ... bench:      30,312
 
 Licensed under
 
- * MIT license ([LICENSE-MIT](LICENSE-MIT) or http://opensource.org/licenses/MIT)
-
+- MIT license ([LICENSE-MIT](LICENSE-MIT) or http://opensource.org/licenses/MIT)
 
 ### Contribution
 
