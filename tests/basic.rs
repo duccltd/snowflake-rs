@@ -2,12 +2,14 @@ use snowflake::SnowflakeIdGenerator;
 
 #[test]
 fn test_generate() {
-    let mut id_generator = SnowflakeIdGenerator::new(1, 2);
+    let ip = "102.65.2.123".to_string();
+    let mut id_generator = SnowflakeIdGenerator::new_from_ip(ip);
     let mut ids = Vec::with_capacity(10000);
 
     for _ in 0..99 {
         for _ in 0..10000 {
-            ids.push(id_generator.generate());
+            let id = id_generator.generate();
+            ids.push(id);
         }
 
         ids.sort();
@@ -22,7 +24,8 @@ fn test_generate() {
 
 #[test]
 fn test_real_time_generate() {
-    let mut id_generator = SnowflakeIdGenerator::new(2, 3);
+    let ip = "102.65.2.123".to_string();
+    let mut id_generator = SnowflakeIdGenerator::new_from_ip(ip);
     let mut ids = Vec::with_capacity(10000);
 
     for _ in 0..99 {
@@ -42,7 +45,8 @@ fn test_real_time_generate() {
 
 #[test]
 fn test_lazy_generate() {
-    let mut id_generator = SnowflakeIdGenerator::new(3, 3);
+    let ip = "102.65.2.123".to_string();
+    let mut id_generator = SnowflakeIdGenerator::new_from_ip(ip);
     let mut ids = Vec::with_capacity(10000);
 
     for _ in 0..99 {
