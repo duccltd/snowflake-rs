@@ -52,7 +52,7 @@ impl SnowflakeIdGenerator {
     /// id_generator.real_time_generate();
     /// ```
     pub fn real_time_generate(&mut self) -> i64 {
-        self.idx = (self.idx + 1) % 4096;
+        self.idx = (self.idx + 1) % 2048;
 
         let mut now_millis = get_time_millis();
 
@@ -60,7 +60,7 @@ impl SnowflakeIdGenerator {
 
         // If the milliseconds of the current clock are equal to
         // the number of milliseconds of the most recently generated id,
-        // then check if enough 4096 are generated,
+        // then check if enough 2048 are generated,
         // if enough then busy wait until the next millisecond.
         if now_millis == self.last_time_millis {
             if self.idx == 0 {
@@ -72,10 +72,10 @@ impl SnowflakeIdGenerator {
             self.idx = 0;
         }
 
-        // last_time_millis is 64 bits，left shift 28 bit，store 46 bits 
+        // last_time_millis is 64 bits，left shift 32 bit，store 42 bits 
         // machine is 28 bits, left shift 12 bit, store 16 bits
         // idx complementing bits.
-        self.last_time_millis << 28
+        self.last_time_millis << 32
             | ((self.machine_bits << 12) as i64)
             | (self.idx as i64)
     }
@@ -83,8 +83,8 @@ impl SnowflakeIdGenerator {
     /// The basic guarantee time punctuality.
     ///
     /// Basic guarantee time punctuality.
-    /// sometimes one millis can't use up 4096 ID, the property of the ID isn't real-time.
-    /// But setting time after every 4096 calls.
+    /// sometimes one millis can't use up 2048 ID, the property of the ID isn't real-time.
+    /// But setting time after every 2048 calls.
     /// # Examples
     ///
     /// ```
@@ -94,9 +94,9 @@ impl SnowflakeIdGenerator {
     /// id_generator.generate();
     /// ```
     pub fn generate(&mut self) -> i64 {
-        self.idx = (self.idx + 1) % 4096;
+        self.idx = (self.idx + 1) % 2048;
 
-        // Maintenance `last_time_millis` for every 4096 ids generated.
+        // Maintenance `last_time_millis` for every 2048 ids generated.
         if self.idx == 0 {
             let mut now_millis = get_time_millis();
 
@@ -107,10 +107,10 @@ impl SnowflakeIdGenerator {
             self.last_time_millis = now_millis;
         }
 
-        // last_time_millis is 64 bits，left shift 28 bit，store 46 bits 
+        // last_time_millis is 64 bits，left shift 32 bit，store 42 bits 
         // machine is 28 bits, left shift 12 bit, store 16 bits
         // idx complementing bits.
-        self.last_time_millis << 28
+        self.last_time_millis << 32
             | ((self.machine_bits << 12) as i64)
             | (self.idx as i64)
     }
@@ -129,16 +129,16 @@ impl SnowflakeIdGenerator {
     /// id_generator.lazy_generate();
     /// ```
     pub fn lazy_generate(&mut self) -> i64 {
-        self.idx = (self.idx + 1) % 4096;
+        self.idx = (self.idx + 1) % 2048;
 
         if self.idx == 0 {
             self.last_time_millis += 1;
         }
 
-        // last_time_millis is 64 bits，left shift 28 bit，store 46 bits 
+        // last_time_millis is 64 bits，left shift 32 bit，store 42 bits 
         // machine is 28 bits, left shift 12 bit, store 16 bits
         // idx complementing bits.
-        self.last_time_millis << 28
+        self.last_time_millis << 32
             | ((self.machine_bits << 12) as i64)
             | (self.idx as i64)
     }
