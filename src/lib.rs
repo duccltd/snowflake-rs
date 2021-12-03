@@ -76,7 +76,7 @@ impl SnowflakeIdGenerator {
         // machine is 28 bits, left shift 12 bit, store 16 bits
         // idx complementing bits.
         self.last_time_millis << 32
-            | ((self.machine_bits << 12) as i64)
+            | ((self.machine_bits << 53) as i64)
             | (self.idx as i64)
     }
 
@@ -111,7 +111,7 @@ impl SnowflakeIdGenerator {
         // machine is 28 bits, left shift 12 bit, store 16 bits
         // idx complementing bits.
         self.last_time_millis << 32
-            | ((self.machine_bits << 12) as i64)
+            | ((self.machine_bits << 53) as i64)
             | (self.idx as i64)
     }
 
@@ -139,7 +139,7 @@ impl SnowflakeIdGenerator {
         // machine is 28 bits, left shift 12 bit, store 16 bits
         // idx complementing bits.
         self.last_time_millis << 32
-            | ((self.machine_bits << 12) as i64)
+            | ((self.machine_bits << 53) as i64)
             | (self.idx as i64)
     }
 }
