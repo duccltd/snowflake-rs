@@ -17,4 +17,9 @@ license = "MIT"
 [lib]
 name = "snowflake"
 
+
 [dependencies]
+
+
+[dev-dependencies]
+chrono = "0.4.19"

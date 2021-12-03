@@ -8,12 +8,19 @@ use std::time::{SystemTime, UNIX_EPOCH};
 #[derive(Copy, Clone, Debug)]
 pub struct SnowflakeIdGenerator {
     /// last_time_millis, last time generate id is used times millis.
-    last_time_millis: i64,
+    pub last_time_millis: i64,
 
     pub machine_bits: i64,
 
     /// auto-increment record.
-    idx: u16,
+    pub idx: u16,
+}
+
+#[derive(Copy, Clone, Debug)]
+pub struct Snowflake {
+    pub timestamp: i64,
+    pub machine_bits: i64,
+    pub idx: u16
 }
 
 impl SnowflakeIdGenerator {
@@ -72,11 +79,11 @@ impl SnowflakeIdGenerator {
             self.idx = 0;
         }
 
-        // last_time_millis is 64 bits，left shift 32 bit，store 42 bits 
-        // machine is 28 bits, left shift 12 bit, store 16 bits
+        // last_time_millis is 64 bits，left shift 23 bit，store 41 bits 
+        // machine is 20 bits, left shift 10 bit, store 10 bits
         // idx complementing bits.
-        self.last_time_millis << 32
-            | ((self.machine_bits << 53) as i64)
+        self.last_time_millis << 22
+            | ((self.machine_bits << 12) as i64)
             | (self.idx as i64)
     }
 
@@ -107,11 +114,11 @@ impl SnowflakeIdGenerator {
             self.last_time_millis = now_millis;
         }
 
-        // last_time_millis is 64 bits，left shift 32 bit，store 42 bits 
+        // last_time_millis is 64 bits，left shift 23 bit，store 41 bits 
         // machine is 28 bits, left shift 12 bit, store 16 bits
         // idx complementing bits.
-        self.last_time_millis << 32
-            | ((self.machine_bits << 53) as i64)
+        self.last_time_millis << 22
+            | ((self.machine_bits << 12) as i64)
             | (self.idx as i64)
     }
 
@@ -138,9 +145,21 @@ impl SnowflakeIdGenerator {
         // last_time_millis is 64 bits，left shift 32 bit，store 42 bits 
         // machine is 28 bits, left shift 12 bit, store 16 bits
         // idx complementing bits.
-        self.last_time_millis << 32
-            | ((self.machine_bits << 53) as i64)
+        self.last_time_millis << 22
+            | ((self.machine_bits << 12) as i64)
             | (self.idx as i64)
+    }
+
+    pub fn reverse(&self, snowflake: u64) -> Snowflake {
+        let timestamp_mask: u64 = 0x7FFFFFFFFFC00000;
+        let ip_mask: u64 = 0x3FF000;
+        let sequence_mask: u64 = 0x3FF;
+
+        let timestamp = ((snowflake & timestamp_mask) >> 22) as i64;
+        let machine = ((snowflake & ip_mask) >> 12) as i64;
+        let sequence = (snowflake & sequence_mask) as u16;
+
+        Snowflake { timestamp, machine_bits: machine, idx: sequence }
     }
 }
 
