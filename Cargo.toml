@@ -22,4 +22,3 @@ name = "snowflake"
 
 
 [dev-dependencies]
-chrono = "0.4.19"
