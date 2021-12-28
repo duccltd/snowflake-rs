@@ -4,6 +4,8 @@
 use std::hint::spin_loop;
 use std::time::{SystemTime, UNIX_EPOCH};
 
+use chrono::{DateTime, Utc};
+
 /// The `SnowflakeIdGenerator` type is snowflake algorithm wrapper.
 #[derive(Copy, Clone, Debug)]
 pub struct SnowflakeIdGenerator {
@@ -150,6 +152,45 @@ impl SnowflakeIdGenerator {
             | (self.idx as i64)
     }
 
+    /// Generate with timestamp
+    /// 
+    /// Generate a snowflake with a given timestamp which could be used for range indexing
+    /// or other
+    /// # Examples
+    /// 
+    /// ```
+    /// use snowflake::SnowflakeIdGenerator;
+    ///
+    /// let mut id_generator = SnowflakeIdGenerator::new_from_ip("102.65.2.123".to_string());
+    /// 
+    /// let timestamp = Utc::now();
+    /// 
+    /// id_generator.generate_with_timestamp(timestamp);
+    /// ```
+    pub fn generate_with_timestmap(&self, timestamp: DateTime<Utc>) -> i64 {
+        let timestamp = timestamp.timestamp();
+        self.generate_with_unix(timestamp)
+    }
+
+    /// Generate with timestamp
+    /// 
+    /// Generate a snowflake with a given timestamp which could be used for range indexing
+    /// or other
+    /// # Examples
+    /// 
+    /// ```
+    /// use snowflake::SnowflakeIdGenerator;
+    ///
+    /// let mut id_generator = SnowflakeIdGenerator::new_from_ip("102.65.2.123".to_string());
+    /// 
+    /// let timestamp = Utc::now();
+    /// 
+    /// id_generator.generate_with_timestamp(timestamp.timestamp());
+    /// ```
+    pub fn generate_with_unix(&self, timestamp: i64) -> i64 {
+        timestamp << 22 | ((self.machine_bits << 12) as i64) | 0 as i64
+    }
+    
     pub fn reverse(&self, snowflake: u64) -> Snowflake {
         let timestamp_mask: u64 = 0x7FFFFFFFFFC00000;
         let ip_mask: u64 = 0x3FF000;
